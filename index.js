@@ -1,7 +1,8 @@
-//Import and require inquirer,mysql2
+//Import and require inquirer,mysql2,console.table
 const inquirer=require("inquirer");
-const Choice = require("inquirer/lib/objects/choice");
 const mysql=require("mysql2");
+const cTable = require("console.table");
+
 
 // Connect to database
 const db = mysql.createConnection(
@@ -13,10 +14,10 @@ const db = mysql.createConnection(
       password: 'hohoattack',
       database: 'employee_db'
     }
-  );
+);
 
 // init function to ask the users what they want to do
-  function init(){
+function init(){
       return inquirer.prompt([
           {
               type:"list",
@@ -42,4 +43,14 @@ const db = mysql.createConnection(
                   return updateEmployee();
           }
       });
-  }
+}
+
+function viewDepartment(){
+    db.query("select * from department",(err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+
+        }
+    })
+}
