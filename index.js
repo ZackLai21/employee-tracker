@@ -1,7 +1,6 @@
 //Import and require inquirer,mysql2,console.table
 const inquirer=require("inquirer");
 const mysql=require("mysql2");
-const cTable = require("console.table");
 
 
 // Connect to database
@@ -50,7 +49,12 @@ function viewDepartment(){
         if(err){
             console.log(err);
         }else{
-
+            console.table(result);
         }
     })
 }
+
+function viewRoles(){
+    
+}
+init();
