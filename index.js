@@ -106,3 +106,56 @@ async function addDepartment(){
     }
 }
 
+async function addRole(){
+    try {
+        const selectDepartmentSql = `SELECT id,name from department;`;
+    
+        const [rows] = await db.promise().query(selectDepartmentSql);
+    
+        // Create array of objects for inquirer choices. Each element is an object
+        // with { name: "Description for user", value: trip }
+        const choices = rows.map((department) => ({
+          name: `${department.name}`,
+          value: department,
+        }));
+    
+        // This will be a trip object from the value property in the choices.
+        const { title, salary } = await inquirer.prompt([
+          {
+            type: "input",
+            message: "What is the name of the role?",
+            name: "title",
+          },
+          {
+            type: "input",
+            message: "What is the salary of the role?",
+            name: "salary",
+          },
+        ]);
+        const { department} = await inquirer.prompt([
+          {
+            type: "list",
+            message: "Which department does the role belong to?",
+            name: "department",
+            choices,
+          },
+        ]);
+    
+        const addDepartment = `INSERT INTO role (title,salary,department_id) values(?, ?, ?);`;
+        await db
+          .promise()
+          .query(addDepartment, [
+              title,
+              salary,
+              department.id
+
+          ]
+          );
+        console.log("Update success.");
+        return init();
+      } catch (error) {
+        console.log(error);
+      }
+
+}
+
