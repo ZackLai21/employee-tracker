@@ -55,7 +55,7 @@ async function init(){
             return updateEmployee();
     }
 }
-
+//function to display department table
 async function viewDepartment(){
     db.query("SELECT * from department",(err,result)=>{
         if(err){
@@ -66,7 +66,7 @@ async function viewDepartment(){
         }
     })
 }
-
+//function to display role table
 async function viewRoles(){
     db.query("SELECT role.id, role.title,department.name as department, role.salary from role join department on role.department_id=department.id",(err,result)=>{
         if(err){
@@ -77,7 +77,7 @@ async function viewRoles(){
         }
     })
 }
-
+//function to display employee table
 async function viewEmployees(){
     db.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name as department, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;",(err,result)=>{
         if(err){
@@ -88,7 +88,7 @@ async function viewEmployees(){
         }
     })
 }
-
+//function to add a department into the table
 async function addDepartment(){
     try{
         const name = await inquirer.prompt([
@@ -105,7 +105,7 @@ async function addDepartment(){
         console.log(error);
     }
 }
-
+//function to add a role into the table
 async function addRole(){
     try {
         const selectDepartmentSql = `SELECT id,name from department;`;
@@ -154,7 +154,7 @@ async function addRole(){
         console.log(error);
       }
 }
-
+//function to add an employee into the table
 async function addEmployee(){
     try {
         const selectRoleSql = `SELECT id,title from role;`;
@@ -212,7 +212,7 @@ async function addEmployee(){
         console.log(error);
       }
 }
-
+// function to update an employee's role
 async function updateEmployee(){
     try {
         const selectEmployeeSql = `SELECT id, CONCAT(first_name, ' ' ,last_name) AS name FROM employee;`;
@@ -250,7 +250,7 @@ async function updateEmployee(){
               name
           ]
           );
-        console.log("Employee added.");
+        console.log("Update success.");
         return init();
       } catch (error) {
         console.log(error);
