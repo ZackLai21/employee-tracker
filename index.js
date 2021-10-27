@@ -57,7 +57,7 @@ async function init(){
 }
 
 async function viewDepartment(){
-    db.query("select * from department",(err,result)=>{
+    db.query("SELECT * from department",(err,result)=>{
         if(err){
             console.log(err);
         }else{
@@ -68,7 +68,7 @@ async function viewDepartment(){
 }
 
 async function viewRoles(){
-    db.query("select a.id,a.title,b.name as department,a.salary from role as a join department as b on a.department_id=b.id",(err,result)=>{
+    db.query("SELECT role.id, role.title,department.name as department, role.salary from role join department on role.department_id=department.id",(err,result)=>{
         if(err){
             console.log(err);
         }else{
@@ -79,7 +79,7 @@ async function viewRoles(){
 }
 
 async function viewEmployees(){
-    db.query(`select a.id,a.first_name,a.last_name,b.title,c.name as deparment,b.salary,a.`,(err,result)=>{
+    db.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name as department, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;",(err,result)=>{
         if(err){
             console.log(err);
         }else{
@@ -87,5 +87,14 @@ async function viewEmployees(){
             return init();
         }
     })
+}
 
+async function addDepartment(){
+    const name = await inquirer.prompt([
+    {
+        name:"name",
+        type:"input",
+        message:"What is the name of the department?"
+    }
+ ])
 }
