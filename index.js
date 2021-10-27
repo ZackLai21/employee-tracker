@@ -214,5 +214,45 @@ async function addEmployee(){
 }
 
 async function updateEmployee(){
+    try {
+        const selectEmployeeSql = `SELECT id, CONCAT(first_name, ' ' ,last_name) AS name FROM employee;`;
     
+        const [rows] = await db.promise().query(selectEmployeeSql);
+
+        const choices = rows.map(({ id, name }) => ({ name: name, value: id }));
+
+        const selectRoleSql = `SELECT id,title from role;`;
+    
+        const [rows2] = await db.promise().query(selectRoleSql);
+
+        const choices2 = rows2.map(({ id, title }) => ({ name: title, value: id }));
+    
+        const { name,role } = await inquirer.prompt([
+          {
+            type: "list",
+            message: "Which employee's role do you want to update?",
+            name: "name",
+            choices:choices
+          },
+          {
+            type: "list",
+            message: "Which role do you want to assign the selected employee?",
+            name: "role",
+            choices:choices2
+          },
+        ]);
+    
+        const addEmployee = `UPDATE employee SET role_id=? where id=?;`;
+        await db
+          .promise()
+          .query(addEmployee, [
+              role,
+              name
+          ]
+          );
+        console.log("Employee added.");
+        return init();
+      } catch (error) {
+        console.log(error);
+      }
 }
