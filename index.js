@@ -90,11 +90,19 @@ async function viewEmployees(){
 }
 
 async function addDepartment(){
-    const name = await inquirer.prompt([
-    {
-        name:"name",
-        type:"input",
-        message:"What is the name of the department?"
+    try{
+        const name = await inquirer.prompt([
+            {
+                name:"name",
+                type:"input",
+                message:"What is the name of the department?"
+            }
+        ])
+        await db.promise().query("INSERT INTO department set ?",name);
+        console.log("Department added.");
+        return init();
+    } catch(error){
+        console.log(error);
     }
- ])
 }
+
