@@ -111,15 +111,12 @@ async function addRole(){
         const selectDepartmentSql = `SELECT id,name from department;`;
     
         const [rows] = await db.promise().query(selectDepartmentSql);
-    
-        // Create array of objects for inquirer choices. Each element is an object
-        // with { name: "Description for user", value: trip }
+
         const choices = rows.map((department) => ({
           name: `${department.name}`,
           value: department,
         }));
     
-        // This will be a trip object from the value property in the choices.
         const { title, salary } = await inquirer.prompt([
           {
             type: "input",
@@ -151,11 +148,71 @@ async function addRole(){
 
           ]
           );
-        console.log("Update success.");
+        console.log("Role added.");
         return init();
       } catch (error) {
         console.log(error);
       }
-
 }
 
+async function addEmployee(){
+    try {
+        const selectRoleSql = `SELECT id,title from role;`;
+    
+        const [rows] = await db.promise().query(selectRoleSql);
+
+        const choices = rows.map(({ id, title }) => ({ name: title, value: id }));
+
+        const selectManagerSql = `SELECT id, CONCAT(first_name, ' ' ,last_name) AS manager FROM employee;`;
+    
+        const [rows2] = await db.promise().query(selectManagerSql);
+
+        const choices2 = rows2.map(({ id, manager }) => ({ name: manager, value: id }));
+    
+        const { fName, lName } = await inquirer.prompt([
+          {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "fName",
+          },
+          {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "lName",
+          },
+        ]);
+        const {title,manager} = await inquirer.prompt([
+          {
+            type: "list",
+            message: "What is the employee's role?",
+            name: "title",
+            choices:choices
+          },
+          {
+            type: "list",
+            message: "Who is the employee's manager?",
+            name: "manager",
+            choices:choices2
+          }
+        ]);
+    
+        const addEmployee = `INSERT INTO employee (first_name,last_name,role_id,manager_id) values(?, ?, ?,?);`;
+        await db
+          .promise()
+          .query(addEmployee, [
+              fName,
+              lName,
+              title,
+              manager
+          ]
+          );
+        console.log("Employee added.");
+        return init();
+      } catch (error) {
+        console.log(error);
+      }
+}
+
+async function updateEmployee(){
+    
+}
